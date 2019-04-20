@@ -1,0 +1,24 @@
+#!/bin/bash
+  
+if [ $# -ne 1 ];then
+echo "#usage: sh $0 <sample name>"
+exit
+fi
+  
+BWA="/Tools/bwa-0.7.17/bwa"
+REFERENCE="/Tools/reference/ucsc.hg19.fasta"
+SAMTOOLS="/Tools/samtools-1.9/bin/samtools"
+ 
+sample=$1
+echo $sample
+ 
+${BWA} mem -R "@RG\tID:test\tSM:${sample}\tPL:ILLUMINA" ${REFERENCE} ${sample}_1. filt.fastq.gz ${sample}_2.filt.fastq.gz > ${sample}.mapped.sam
+echo "sam file successfully made"
+ 
+ 
+${SAMTOOLS} view -Sb ${sample}.mapped.sam > ${sample}.mapped.bam
+ 
+echo "bam file successfully made"
+
+${SAMTOOLS} index ${sample}.mapped.sorted.bam
+echo "bam file successfully indexed”
